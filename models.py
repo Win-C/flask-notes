@@ -47,7 +47,7 @@ class User(db.Model):
     notes = db.relationship(
         "Note",
         backref="user",
-        cascade="all,delete-orphan"
+        cascade="all,delete-orphan",
         )
 
     def __repr__(self):
@@ -116,6 +116,7 @@ class Note(db.Model):
     owner = db.Column(
         db.Text,
         db.ForeignKey("users.username"),
+        nullable=False,
         )
 
     def __repr__(self):

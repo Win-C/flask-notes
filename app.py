@@ -44,8 +44,7 @@ def user_register():
         # on successful login, redirect to users page
         return redirect(f"/users/{new_user.username}")
 
-    else:
-        return render_template("register.html", form=form)
+    return render_template("register.html", form=form)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -92,9 +91,8 @@ def user_detail(username):
         flash("You must be logged in to view!")
         return redirect("/")
 
-    else:
-        user = User.query.get(username)
-        return render_template("user_detail.html", user=user)
+    user = User.query.get(username)
+    return render_template("user_detail.html", user=user)
 
 
 @app.route("/users/<username>/delete", methods=["POST"])
@@ -104,13 +102,12 @@ def user_delete(username):
 
     if session.get("username") != username:
         flash("You must be logged in to view!")
+        return redirect("/")
 
-    else:
-        user = User.query.get(username)
-        db.session.delete(user)
-        db.session.commit()
-        session.pop(username, None)
-
+    user = User.query.get(username)
+    db.session.delete(user)
+    db.session.commit()
+    session.pop(username, None)
     return redirect("/")
 
 
@@ -122,36 +119,35 @@ def user_notes_add(username):
         flash("You must be logged in to view!")
         return redirect("/")
 
+    form = AddNoteForm()
+
+    if form.validate_on_submit():
+        user = User.query.get(username)
+
+        title = form.title.data
+        content = form.content.data
+        owner = user.username
+
+        new_note = Note(
+            title=title,
+            content=content,
+            owner=owner,
+        )
+
+        db.session.add(new_note)
+        db.session.commit()
+
+        return redirect(f"/users/{user.username}")
+
     else:
-        form = AddNoteForm()
-
-        if form.validate_on_submit():
-            user = User.query.get(username)
-
-            title = form.title.data
-            content = form.content.data
-            owner = user.username
-
-            new_note = Note(
-                title=title,
-                content=content,
-                owner=owner,
-            )
-
-            db.session.add(new_note)
-            db.session.commit()
-
-            return redirect(f"/users/{user.username}")
-
-        else:
-            return render_template("user_notes_add.html", form=form)
+        return render_template("user_notes_add.html", form=form)
 
 
 ##############################################################################
 # User notes paths
 
 
-@app.route("/notes/<note_id>/update", methods=["GET", "POST"])
+@app.route("/notes/<int:note_id>/update", methods=["GET", "POST"])
 def note_update(note_id):
     """ Show note edit form or handle note update. """
 
@@ -162,22 +158,21 @@ def note_update(note_id):
         flash("You must be logged in to view!")
         return redirect("/")
 
+    form = UpdateNoteForm(obj=note)
+
+    if form.validate_on_submit():
+        note.title = form.title.data
+        note.content = form.content.data
+
+        db.session.commit()
+
+        return redirect(f"/users/{username}")
+
     else:
-        form = UpdateNoteForm(obj=note)
-
-        if form.validate_on_submit():
-            note.title = form.title.data
-            note.content = form.content.data
-
-            db.session.commit()
-
-            return redirect(f"/users/{username}")
-
-        else:
-            return render_template("note_update.html", form=form, note=note)
+        return render_template("note_update.html", form=form, note=note)
 
 
-@app.route("/notes/<note_id>/delete", methods=["POST"])
+@app.route("/notes/<int:note_id>/delete", methods=["POST"])
 def note_delete(note_id):
     """ Delete a note and redirect. """
 
@@ -188,8 +183,7 @@ def note_delete(note_id):
         flash("You must be logged in to view!")
         return redirect("/")
 
-    else:
-        db.session.delete(note)
-        db.session.commit()
+    db.session.delete(note)
+    db.session.commit()
 
     return redirect(f"/users/{username}")

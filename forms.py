@@ -7,6 +7,7 @@ from wtforms.fields.html5 import EmailField
 class RegisterForm(FlaskForm):
     """Form for registering a user."""
 
+    # TODO: Look into validate maximum length with WTForm
     username = StringField("Username", validators=[InputRequired()])
     password = PasswordField("Password", validators=[InputRequired()])
     email = EmailField("Email", validators=[InputRequired()])
@@ -33,3 +34,5 @@ class UpdateNoteForm(FlaskForm):
 
     title = StringField("Title", validators=[InputRequired()])
     content = StringField("Content", validators=[InputRequired()])
+
+# TODO: create a new form for note delete button, take advantage of CSRF security
