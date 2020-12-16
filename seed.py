@@ -5,19 +5,19 @@ db.drop_all()
 db.create_all()
 
 u1 = User.register(
-    username="test1", 
-    password = "test1", 
-    email = "test1@gmail.com", 
-    first_name = "test1", 
-    last_name = "test1", 
+    username="test1",
+    password="password1",
+    email="test1@gmail.com",
+    first_name="test1",
+    last_name="test1",
     )
 
 u2 = User.register(
-    username="test2", 
-    password = "test2", 
-    email = "test2@gmail.com", 
-    first_name = "test2", 
-    last_name = "test2", 
+    username="test2",
+    password="test2",
+    email="test2@gmail.com",
+    first_name="test2",
+    last_name="test2",
 )
 
 db.session.add(u1)

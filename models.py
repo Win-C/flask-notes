@@ -44,7 +44,11 @@ class User(db.Model):
         nullable=False,
         )
 
-    notes = db.relationship("Note", backref="user")
+    notes = db.relationship(
+        "Note",
+        backref="user",
+        cascade="all,delete-orphan"
+        )
 
     def __repr__(self):
 
@@ -116,4 +120,3 @@ class Note(db.Model):
 
     def __repr__(self):
         return f"<Note {self.id}, {self.title}, {self.owner}>"
-

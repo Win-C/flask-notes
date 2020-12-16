@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}User Note Edit Form{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <h1 class="display-4">Edit {{ note.title }} Below</h1>
+  
+    <form method="POST">
+  
+      <!-- template partial -->
+      {% include '_form.html' %}
+      <button type="submit">Edit Note</button>
+  
+    </form>
+</div>
+
+{% endblock %}
